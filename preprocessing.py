@@ -1,4 +1,7 @@
 import problem_unittests as tests
+import helper
+data_dir = './data/Seinfeld_Scripts.txt'
+text = helper.load_data(data_dir)
 
 
 def create_lookup_tables(text):
@@ -43,3 +46,5 @@ def token_lookup():
 
 tests.test_create_lookup_tables(create_lookup_tables)
 tests.test_tokenize(token_lookup)
+
+helper.preprocess_and_save_data(data_dir, token_lookup, create_lookup_tables)
