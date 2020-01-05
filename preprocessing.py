@@ -20,4 +20,17 @@ def create_lookup_tables(text):
     return vocab_to_int, int_to_vocab
 
 
+def token_lookup():
+    """
+    Generate a dict to turn punctuation into a token.
+    :return: Tokenized dictionary where the key is the punctuation and the value is the token
+    """
+    dict = {
+        "!":  "|| Exclamation_Mark ||"
+    }
+
+    return dict
+
+
 tests.test_create_lookup_tables(create_lookup_tables)
+tests.test_tokenize(token_lookup)
