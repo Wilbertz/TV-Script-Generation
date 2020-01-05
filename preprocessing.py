@@ -26,7 +26,16 @@ def token_lookup():
     :return: Tokenized dictionary where the key is the punctuation and the value is the token
     """
     dict = {
-        "!":  "|| Exclamation_Mark ||"
+        ".": "||Period||",
+        ",": "||Comma||",
+        "\"": "||Quotation_Mark||",
+        ";": "||Semicolon||",
+        "!":  "||Exclamation_Mark||",
+        "?": "||Question_Mark||",
+        "(": "||Left_Parentheses||",
+        ")": "||Right_Parentheses||",
+        "-": "||Dash||",
+        "\n": "||Return||"
     }
 
     return dict
