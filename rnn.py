@@ -5,6 +5,7 @@ import helper
 
 train_on_gpu = torch.cuda.is_available()
 
+
 class RNN(nn.Module):
 
     def __init__(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, dropout=0.5):
@@ -44,8 +45,16 @@ class RNN(nn.Module):
         # Implement function
 
         # initialize hidden state with zero weights, and move to GPU if available
+        weight = next(self.parameters()).data
 
-        return None
+        if train_on_gpu:
+            hidden = (weight.new(self.n_layers, batch_size, self.n_hidden).zero_().cuda(),
+                      weight.new(self.n_layers, batch_size, self.n_hidden).zero_().cuda())
+        else:
+            hidden = (weight.new(self.n_layers, batch_size, self.n_hidden).zero_(),
+                      weight.new(self.n_layers, batch_size, self.n_hidden).zero_())
+
+        return hidden
 
 
 """
