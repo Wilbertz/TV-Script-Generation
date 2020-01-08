@@ -29,6 +29,10 @@ class RNN(nn.Module):
         self.dropout = dropout
 
         # define model layers
+        self.embedding = nn.Embedding(self.vocab_size, self.embedding_dim)
+        self.lstm = nn.LSTM(self.embedding_dim, self.hidden_dim, self.n_layers, dropout=self.dropout, batch_first=True)
+        self.dropout = nn.Dropout(self.dropout)
+        self.fc = nn.Linear(self.hidden_dim, self.output_size)
 
     def forward(self, nn_input, hidden):
         """
@@ -37,10 +41,21 @@ class RNN(nn.Module):
         :param hidden: The hidden state
         :return: Two Tensors, the output of the neural network and the latest hidden state
         """
-        # TODO: Implement function
+
+        embeddings = self.embedding(nn_input.long())
+        lstm_output, hidden = self.lstm(embeddings, hidden)
+
+        lstm_output = lstm_output.contiguous().view(-1, self.hidden_dim)
+
+        lstm_output = self.fc(lstm_output)
+
+        batch_size = nn_input.size(0)
+        lstm_output = lstm_output.view(batch_size, -1, self.output_size)
+
+        output = lstm_output[:, -1]
 
         # return one batch of output word scores and the hidden state
-        return None, None
+        return output, hidden
 
     def init_hidden(self, batch_size):
         '''
@@ -54,11 +69,11 @@ class RNN(nn.Module):
         weight = next(self.parameters()).data
 
         if train_on_gpu:
-            hidden = (weight.new(self.n_layers, batch_size, self.n_hidden).zero_().cuda(),
-                      weight.new(self.n_layers, batch_size, self.n_hidden).zero_().cuda())
+            hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().cuda(),
+                      weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().cuda())
         else:
-            hidden = (weight.new(self.n_layers, batch_size, self.n_hidden).zero_(),
-                      weight.new(self.n_layers, batch_size, self.n_hidden).zero_())
+            hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_(),
+                      weight.new(self.n_layers, batch_size, self.hidden_dim).zero_())
 
         return hidden
 
