@@ -21,6 +21,12 @@ class RNN(nn.Module):
         # TODO: Implement function
 
         # set class variables
+        self.vocab_size = vocab_size
+        self.output_size = output_size
+        self.embedding_dim = embedding_dim
+        self.hidden_dim = hidden_dim
+        self.n_layers = n_layers
+        self.dropout = dropout
 
         # define model layers
 
