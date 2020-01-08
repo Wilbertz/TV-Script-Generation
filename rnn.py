@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import problem_unittests as tests
-import helper
 
 train_on_gpu = torch.cuda.is_available()
 
@@ -82,3 +81,50 @@ class RNN(nn.Module):
 DON'T MODIFY ANYTHING IN THIS CELL THAT IS BELOW THIS LINE
 """
 tests.test_rnn(RNN, train_on_gpu)
+
+
+def forward_back_prop(rnn, optimizer, criterion, inp, target, hidden):
+    """
+    Forward and backward propagation on the neural network
+    :param rnn: The PyTorch Module that holds the neural network
+    :param optimizer: The PyTorch optimizer for the neural network
+    :param criterion: The PyTorch loss function
+    :param inp: A batch of input to the neural network
+    :param target: The target output for the batch of input
+    :param hidden: The hidden state
+    :return: The loss and the latest hidden state Tensor
+    """
+
+    # TODO: Implement Function
+
+    # move data to GPU, if available
+    if train_on_gpu:
+        inp, target = inp.cuda(), target.cuda()
+
+    hidden = tuple([each.data for each in hidden])
+
+    # perform back propagation and optimization
+    # zero accumulated gradients
+    rnn.zero_grad()
+
+    # get the output from the RNN model
+    output, hidden = rnn(inp, hidden)
+
+    # perform back propagation and optimization
+    # calculate the loss and perform back prop
+    loss = criterion(output, target)
+    loss.backward()
+
+    # 'clip_grad_norm' helps prevent the exploding gradient problem in RNNs / LSTMs
+    nn.utils.clip_grad_norm_(rnn.parameters(), 5)
+    optimizer.step()
+
+    # return the loss over a batch and the hidden state produced by our model
+    return loss.item(), hidden
+
+# Note that these tests aren't completely extensive.
+# they are here to act as general checks on the expected outputs of your functions
+"""
+DON'T MODIFY ANYTHING IN THIS CELL THAT IS BELOW THIS LINE
+"""
+tests.test_forward_back_prop(RNN, forward_back_prop, train_on_gpu)
