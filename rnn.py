@@ -1,6 +1,9 @@
 import torch
 import torch.nn as nn
+import numpy as np
 import problem_unittests as tests
+from data_loader import batch_data
+import helper
 
 train_on_gpu = torch.cuda.is_available()
 
@@ -128,3 +131,47 @@ def forward_back_prop(rnn, optimizer, criterion, inp, target, hidden):
 DON'T MODIFY ANYTHING IN THIS CELL THAT IS BELOW THIS LINE
 """
 tests.test_forward_back_prop(RNN, forward_back_prop, train_on_gpu)
+
+
+def train_rnn(rnn, batch_size, optimizer, criterion, n_epochs, show_every_n_batches=100):
+    batch_losses = []
+
+    rnn.train()
+
+    print("Training for %d epoch(s)..." % n_epochs)
+    for epoch_i in range(1, n_epochs + 1):
+
+        # initialize hidden state
+        hidden = rnn.init_hidden(batch_size)
+
+        for batch_i, (inputs, labels) in enumerate(train_loader, 1):
+
+            # make sure you iterate over completely full batches, only
+            n_batches = len(train_loader.dataset) // batch_size
+            if batch_i > n_batches:
+                break
+
+            # forward, back prop
+            loss, hidden = forward_back_prop(rnn, optimizer, criterion, inputs, labels, hidden)
+            # record loss
+            batch_losses.append(loss)
+
+            # printing loss stats
+            if batch_i % show_every_n_batches == 0:
+                print('Epoch: {:>4}/{:<4}  Loss: {}\n'.format(
+                    epoch_i, n_epochs, np.average(batch_losses)))
+                batch_losses = []
+
+    # returns a trained rnn
+    return rnn
+
+
+# Data params
+# # Sequence Length
+sequence_length =  10  # of words in a sequence
+# Batch Size
+batch_size = 128
+
+int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
+
+train_loader = batch_data(int_text, sequence_length, batch_size)
