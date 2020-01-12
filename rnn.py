@@ -4,7 +4,7 @@ import numpy as np
 import problem_unittests as tests
 from data_loader import batch_data
 import helper
-
+import workspace_utils
 train_on_gpu = torch.cuda.is_available()
 
 
@@ -168,7 +168,7 @@ def train_rnn(rnn, batch_size, optimizer, criterion, n_epochs, show_every_n_batc
 
 # Data params
 # # Sequence Length
-sequence_length =  10  # of words in a sequence
+sequence_length = 10  # of words in a sequence
 # Batch Size
 batch_size = 128
 
