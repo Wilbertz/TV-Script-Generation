@@ -19,6 +19,14 @@
     - preprocessing.py
     - problem_unittests.py
     - rnn.py
-    - workspace_utils. 
+    - workspace_utils
+    - data /  
+        - Seinfeld_Scripts.
+    - generated_scripts /  
+        - generated_script_george_4.txt
+        - generated_script_jerry_4.txt
+        - generated_script_jerry_5.txt
+        - generated_script_kramer_4.txt
+        - generated_script_kramer_5.txt
         
     
